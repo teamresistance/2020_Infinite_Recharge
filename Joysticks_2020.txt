@@ -1,0 +1,167 @@
+package frc.io.joysticks;
+// Kaitlyn Ludlam and Kasey Ludlam
+// trying to create new joystick code - however we do not know the specifics for the turret so we tried our best
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.io.js_btns.Axis;
+import frc.io.js_btns.Button;
+import frc.io.js_btns.Pov;
+
+//Initializing all joysticks, buttons, axis & povs.
+public class Joysticks_2020{
+    public static int JSConf = 0;     // 0 = Joysticks, 1 = left Joystick, 2 = gamePad, 3 = Mixed Left JoyStick & GP, 4 = Nintendo Pad (if we have that)
+    public static Joystick leftJoystick = new Joystick(0);      // Left JoyStick
+    public static Joystick rightJoystick = new Joystick(1);     // Right JoyStick
+    public static Joystick coJoystick = new Joystick(2);        // Co-Driver JoyStick
+    public static Joystick gamePad = new Joystick(3);           // for Normal mode 
+    public static Joystick NintPad = new Joystick(4);            // Nintendo gamepad
+    public static Joystick arJS[] = {leftJoystick,rightJoystick, coJoystick,
+                                     gamePad, NintPad};
+   
+    // Initializing stick control
+    public static Axis leftDrive;    
+    public static Axis rightDrive;   
+    public static Axis turretRot;     // Rotate turret
+
+
+    // Initializing Turret buttons
+    public static Button shooterGo;    // Run shooter trigger
+    public static Button shooterStop;   // Stop shooter
+    public static Button turretCW;      // Turn turret CW button
+    public static Button turretCCW;     // Turn turret CCW button
+    public static Button liftUp;        //  lift balls using motor
+    public static Button liftDown;      // lower balls using motor
+    public static Button turretJoystick;  // Directly move turret with joystick control
+    public static Pov turretSP;         // Rotate by position with Joystick
+    public static Button turretForward;    // Rotate forward
+
+
+    public static Button ptrShtrDiag = new Button(coJoystick, 11);
+
+    public JS_IO(){   // constructor to use the IO - initialization
+        init();
+    }
+    public static void init(){
+        SmartDashboard.putNumber("JS_Configuration", 0); // initialization method to print the configuration values to driver
+        JSConf();
+    }
+    public static void update() {   //another method to update user of configuration
+        if(JSConf != SmartDashboard.getNumber("JS_Configuration", 0)){
+            JSConf = (int)SmartDashboard.getNumber("JS_Configuration", 0);
+            JSConf();
+        }
+    }
+    public static void JSConf() {   //Default Joystick to nintedo gamepad, just in case
+        JSConf = (int)SmartDashboard.getNumber("JS_Configuration", 0);
+        switch( JSConf ){
+            case 0:     // Normal 3 joystick configuration for drive
+                Norm3JS();
+            break;
+
+            case 1:     // Nintendo Gamepad only
+                N_Gamepad();
+            break;
+
+            case 2:     // Left joystick only
+                A_JoySticks();
+            break;
+
+            case 3:     // Left Joystick & Gamepad
+                JoyStick_GamePad();
+
+            case 4:     // Nintendo Gamepad
+                NintP();
+            break;
+
+            default:    // defauit button setup for joysticks and gamepad
+                CaseDefault();
+            break;
+
+        }
+    }
+
+
+    // - Controller Actions and Things -
+
+    // Joysticks Configuration, Using 3 Controllers
+    private static void Norm3JS(){
+
+        leftDrive = new Axis(leftJoystick, 1);
+        rightDrive = new Axis(rightJoystick, 1);
+        turretRot = new Axis(coJoystick, 0);
+
+        // Turret buttons
+        shooterGO = new Button(rightJoystick, 1);
+        shooterStop = new Button(rightJoystick, 6);
+        turretCW = new Button(rightJoystick, 12);
+        turretCCW = new Button(rightJoystick, 11);
+        lifterUp = new Button(rightJoystick, 3);
+        lifterDown = new Button(rightJoystick, 5);
+
+        turretJoystick = new Button(coJoystick, 7);
+        turretSP = new Pov(coJoystick, 0);
+        turretForward = new Button(coJoystick, 9);
+        // Shooter testing only on Norm3JS
+        ptrShtrDiag = new Button(coJoystick, 11);
+    }
+
+   
+ 
+    private static void A_JoySticks(){ // setup for joysticks
+
+        CaseDefault();  // button setup starts on line 131
+    }
+
+    private static void JoyStick_GamePad(){
+
+        N_Gamepad();     // button setup starts on line 152
+    }
+
+    private static void NintP(){  // setup for Nintendo gamepad
+ 
+        CaseDefault();  
+    }
+
+
+    // assigning of the buttons
+    private static void CaseDefault(){
+
+        leftDrive = new Axis(null, 0);
+        rightDrive = new Axis(null, 0);
+        turretRot = new Axis(null, 0);
+
+        // buttons for turret
+        shooterGo = new Button(null, 0);
+        shooterStop = new Button(null, 0);
+        turretCW = new Button(null, 0);
+        turretCCW = new Button(null, 0);
+        lifterUp = new Button(null, 0);
+        lifterDown = new Button(null, 0);
+
+        turretJSDir = new Button(null, 0);
+        turretSP = new Pov(null, -1);
+        turretForward = new Button(null, 0);
+    }
+
+    // assigning of the buttons
+    private static void N_Gamepad(){
+
+        leftDrive = new Axis(gamePad, 1);
+        rightDrive = new Axis(gamePad, 5);
+        turretRot = new Axis(gamePad, 4);
+
+        // buttons for turrets
+        shooterGo = new Button(gamePad, 6);
+        shooterStop = new Button(gamePad, 9);
+        turretCW = new Button(gamePad, 2);
+        turretCCW = new Button(gamePad, 3);
+        lifterUp = new Button(gamePad, 4);
+        lifterDown = new Button(gamePad, 1);
+
+        turretJSDir = new Button(gamePad, 7);
+        turretSP = new Pov(gamePad, 0);
+        turretForward = new Button(gamePad, 8);
+        }
+
+}
